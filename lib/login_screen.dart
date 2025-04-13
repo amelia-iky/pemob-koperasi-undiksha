@@ -1,21 +1,45 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login(BuildContext context) {
-    if (_usernameController.text == "2315091018" && _passwordController.text == "2315091018") {
+  void _login() {
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
+
+    const validUsername = "2315091018";
+    const validPassword = "2315091018";
+
+    if (username != validUsername) {
+      _showSnackBar("Username salah");
+    } else if (password != validPassword) {
+      _showSnackBar("Password salah");
+    } else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Username atau Password salah")),
-      );
     }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -35,7 +59,7 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          Image.asset('assets/logo.png', height: 100), // Tambahkan gambar logo di folder assets
+          Image.asset('assets/logo.png', height: 100),
           Padding(
             padding: EdgeInsets.all(16.0),
             child: Column(
@@ -52,7 +76,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _login(context),
+                  onPressed: _login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue[900],
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -73,7 +97,7 @@ class LoginScreen extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(10),
             color: Colors.grey[300],
-            child: Text("copyright @2022 by Undiksha"),
+            child: Text("copyright @2025 by Ayukadw"),
           ),
         ],
       ),
