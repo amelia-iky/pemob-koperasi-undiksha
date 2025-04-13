@@ -9,6 +9,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String usernameError = '';
+  String passwordError = '';
 
   void _login() {
     final username = _usernameController.text.trim();
@@ -17,22 +19,25 @@ class _LoginScreenState extends State<LoginScreen> {
     const validUsername = "2315091018";
     const validPassword = "2315091018";
 
+    setState(() {
+      usernameError = '';
+      passwordError = '';
+    });
+
     if (username != validUsername) {
-      _showSnackBar("Username salah");
+      setState(() {
+        usernameError = "Username salah";
+      });
     } else if (password != validPassword) {
-      _showSnackBar("Password salah");
+      setState(() {
+        passwordError = "Password salah";
+      });
     } else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     }
-  }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
   }
 
   @override
@@ -66,12 +71,20 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 TextField(
                   controller: _usernameController,
-                  decoration: InputDecoration(labelText: "Username", border: OutlineInputBorder()),
+                  decoration: InputDecoration(
+                    labelText: "Username",
+                    border: OutlineInputBorder(),
+                    errorText: usernameError.isEmpty ? null : usernameError, // Menampilkan error jika ada
+                  ),
                 ),
                 SizedBox(height: 10),
                 TextField(
                   controller: _passwordController,
-                  decoration: InputDecoration(labelText: "Password", border: OutlineInputBorder()),
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    border: OutlineInputBorder(),
+                    errorText: passwordError.isEmpty ? null : passwordError, // Menampilkan error jika ada
+                  ),
                   obscureText: true,
                 ),
                 SizedBox(height: 20),

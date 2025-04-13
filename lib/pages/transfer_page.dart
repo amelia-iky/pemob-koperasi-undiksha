@@ -10,12 +10,13 @@ class TransferPage extends StatefulWidget {
 class _TransferPageState extends State<TransferPage> {
   final TextEditingController _nominalController = TextEditingController();
   String pesan = '';
+  double saldoTersisa = nasabahDummy.saldo; // Simpan saldo yang tersisa
 
   void _transfer() {
     final double? jumlah = double.tryParse(_nominalController.text);
     if (jumlah == null || jumlah <= 0) {
       setState(() {
-        pesan = "Nominal tidak valid.";
+        pesan = "Nominal tidak valid. Harap masukkan angka yang lebih besar dari 0.";
       });
       return;
     }
@@ -28,7 +29,8 @@ class _TransferPageState extends State<TransferPage> {
     }
 
     setState(() {
-      nasabahDummy.saldo -= jumlah;
+      nasabahDummy.saldo -= jumlah; // Update saldo nasabah
+      saldoTersisa = nasabahDummy.saldo; // Update saldo tersisa
       nasabahDummy.tambahTransaksi(
         Transaksi(
           deskripsi: "Transfer Dana",
@@ -36,8 +38,11 @@ class _TransferPageState extends State<TransferPage> {
           tanggal: DateTime.now(),
         ),
       );
-      pesan = "Transfer berhasil!";
+      pesan = "Transfer berhasil! Saldo tersisa: Rp ${saldoTersisa.toStringAsFixed(0)}";
     });
+
+    // Clear text field setelah transfer
+    _nominalController.clear();
   }
 
   @override
@@ -48,13 +53,25 @@ class _TransferPageState extends State<TransferPage> {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            Text("Saldo Anda: Rp ${nasabahDummy.saldo.toStringAsFixed(0)}", // Menampilkan saldo awal
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 20),
             TextField(
               controller: _nominalController,
               decoration: InputDecoration(labelText: "Nominal"),
               keyboardType: TextInputType.number,
             ),
-            ElevatedButton(onPressed: _transfer, child: Text("Kirim")),
-            if (pesan.isNotEmpty) Text(pesan),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _transfer,
+              child: Text("Kirim"),
+            ),
+            SizedBox(height: 20),
+            if (pesan.isNotEmpty)
+              Text(
+                pesan,
+                style: TextStyle(color: pesan.contains("berhasil") ? Colors.green : Colors.red),
+              ),
           ],
         ),
       ),
