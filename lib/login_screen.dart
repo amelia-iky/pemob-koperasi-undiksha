@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tugasbank_ayuka/data/nasabah_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,11 +14,11 @@ class _LoginScreenState extends State<LoginScreen> {
   String usernameError = '';
   String passwordError = '';
 
-  void _login() {
+  void _login() async {
     final username = _usernameController.text.trim();
     final password = _passwordController.text.trim();
 
-    const validUsername = "2315091018";
+    const validUsername = "Ayukadw";
     const validPassword = "2315091018";
 
     setState(() {
@@ -33,19 +35,21 @@ class _LoginScreenState extends State<LoginScreen> {
         passwordError = "Password salah";
       });
     } else {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('username', username);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => HomeScreen(nasabah: nasabahDummy,)),
       );
     }
   }
 
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _usernameController.dispose();
+  //   _passwordController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -10,26 +10,30 @@ import 'package:flutter_tugasbank_ayuka/pages/pinjaman_page.dart';
 import 'package:flutter_tugasbank_ayuka/pages/transfer_page.dart';
 import 'package:flutter_tugasbank_ayuka/models/nasabah.dart';
 import 'package:flutter_tugasbank_ayuka/models/transaksi.dart';
+import '../data/nasabah_data.dart';
 import 'package:intl/intl.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  final Nasabah nasabah;
+
+  const HomeScreen({Key? key, required this.nasabah}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late Nasabah _nasabah;
   final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
 
   @override
-  Widget build(BuildContext context) {
-    Nasabah nasabah = Nasabah(
-      nama: "Ayu Kusuma",
-      saldo: 3600000,
-      histori: [
-        Transaksi(deskripsi: "Transfer ke Budi", jumlah: 100000, tanggal: DateTime.now().subtract(Duration(days: 1))),
-        Transaksi(deskripsi: "Deposit", jumlah: 500000, tanggal: DateTime.now().subtract(Duration(days: 2))),
-      ],
-      historiBayar: [
-        Transaksi(deskripsi: "Bayar Listrik", jumlah: 200000, tanggal: DateTime.now().subtract(Duration(days: 3))),
-        Transaksi(deskripsi: "Bayar Internet", jumlah: 150000, tanggal: DateTime.now().subtract(Duration(days: 4))),
-      ],
-    );
+  void initState() {
+    super.initState();
+    _nasabah = widget.nasabah;
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[900],
@@ -65,10 +69,10 @@ class HomeScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Text("Nasabah", style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text(nasabah.nama, overflow: TextOverflow.ellipsis),
+                            Text(_nasabah.nama, overflow: TextOverflow.ellipsis),
                             const SizedBox(height: 5),
                             const Text("Total Saldo Anda", style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text(currencyFormat.format(nasabah.saldo)),
+                            Text(currencyFormat.format(_nasabah.saldo)),
                           ],
                         ),
                       ),
@@ -76,7 +80,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
 
-                // Menu
+                // Menu Utama
                 GridView.count(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -87,8 +91,9 @@ class HomeScreen extends StatelessWidget {
                     _buildMenuItem(context, Icons.account_balance_wallet, "Cek Saldo", () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CekSaldoPage()));
                     }),
-                    _buildMenuItem(context, Icons.send, "Transfer", () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => TransferPage()));
+                    _buildMenuItem(context, Icons.send, "Transfer", () async {
+                      await Navigator.push(context, MaterialPageRoute(builder: (context) => TransferPage()));
+                      setState(() {}); // Refresh setelah transfer
                     }),
                     _buildMenuItem(context, Icons.savings, "Deposito", () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => DepositoPage()));
@@ -168,8 +173,9 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildBottomMenu(BuildContext context, IconData icon, String label, Widget page) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+      onTap: () async {
+        await Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+        setState(() {}); // Refresh saldo jika ada perubahan dari halaman lain
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -181,3 +187,4 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
