@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tugasbank_ayuka/data/nasabah_data.dart';
+import 'package:flutter_tugasbank_isyana/data/nasabah_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
 
@@ -18,8 +18,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final username = _usernameController.text.trim();
     final password = _passwordController.text.trim();
 
-    const validUsername = "Ayukadw";
-    const validPassword = "2315091018";
+    const validUsername = "isyana";
+    const validPassword = "2315091061";
 
     setState(() {
       usernameError = '';
@@ -39,7 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
       await prefs.setString('username', username);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen(nasabah: nasabahDummy,)),
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(nasabah: nasabahDummy),
+        ),
       );
     }
   }
@@ -63,7 +65,11 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Center(
               child: Text(
                 "Koperasi Undiksha",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -78,7 +84,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     labelText: "Username",
                     border: OutlineInputBorder(),
-                    errorText: usernameError.isEmpty ? null : usernameError, // Menampilkan error jika ada
+                    errorText:
+                        usernameError.isEmpty
+                            ? null
+                            : usernameError, // Menampilkan error jika ada
                   ),
                 ),
                 SizedBox(height: 10),
@@ -87,7 +96,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     labelText: "Password",
                     border: OutlineInputBorder(),
-                    errorText: passwordError.isEmpty ? null : passwordError, // Menampilkan error jika ada
+                    errorText:
+                        passwordError.isEmpty
+                            ? null
+                            : passwordError, // Menampilkan error jika ada
                   ),
                   obscureText: true,
                 ),
@@ -96,17 +108,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: _login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue[900],
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   child: Text("Login", style: TextStyle(color: Colors.white)),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    TextButton(onPressed: () {}, child: Text("Daftar Mbanking")),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text("Daftar Mbanking"),
+                    ),
                     TextButton(onPressed: () {}, child: Text("Lupa password?")),
                   ],
-                )
+                ),
               ],
             ),
           ),
@@ -114,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Container(
             padding: EdgeInsets.all(10),
             color: Colors.grey[300],
-            child: Text("copyright @2025 by Ayukadw"),
+            child: Text("copyright @2025 by iisyanaa"),
           ),
         ],
       ),

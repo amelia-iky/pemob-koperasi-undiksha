@@ -8,6 +8,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String username = '';
+  TextEditingController _usernameController = TextEditingController();
 
   @override
   void initState() {
@@ -15,51 +16,72 @@ class _ProfilePageState extends State<ProfilePage> {
     _loadUsername();
   }
 
+  // Ambil username dari SharedPreferences
   void _loadUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      username = prefs.getString('username') ?? 'Guest'; // GANTI key jadi 'username'
+      username = prefs.getString('username') ?? 'Guest';
     });
+  }
+
+  // Simpan username ke SharedPreferences
+  void _saveUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', _usernameController.text);
+    setState(() {
+      username = _usernameController.text;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Username berhasil disimpan!')),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-    backgroundColor: Color(0xFFE0F2FF),
-    appBar: AppBar(
-      centerTitle: true,
-      backgroundColor: const Color(0xFF0D47A1),
-      title: Text('Profil', style: TextStyle(color: Colors.white)),
-    ),
-    body: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Foto(),
-          Nama(),
-          Web(),
-          SizedBox(height: 20),
-          Text(
-            "Welcome, $username!",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-        ],
+    return Scaffold(
+      backgroundColor: Color(0xFFE0F2FF),
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: const Color(0xFF0D47A1),
+        title: Text('Profil', style: TextStyle(color: Colors.white)),
       ),
-    ),
-  );
-}
-}
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ProfilePage(), // GANTI ke ProfilePage
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Foto(),
+              Nama(),
+              SizedBox(height: 20),
+              Text(
+                "Welcome, $username!",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                child: TextField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    labelText: 'Masukkan Username Baru',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: _saveUsername,
+                child: Text('Simpan Username'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[800],
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -69,7 +91,7 @@ class Foto extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: 75,
-      backgroundImage: AssetImage('assets/DSC05580.png'),
+      backgroundImage: AssetImage('assets/DSC05580.jpg'),
     );
   }
 }
@@ -80,28 +102,11 @@ class Nama extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: 20),
       child: Text(
-        'Ni Putu Ayu Kusuma Dewi',
+        'I Gusti Ayu Isyana Ariprabha',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 20,
-          color: Colors.blueAccent,
-        ),
-      ),
-    );
-  }
-}
-
-class Web extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 5),
-      child: Text(
-        'https://tinyurl.com/ayukadw1018',
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
           color: Colors.blueAccent,
         ),
       ),

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tugasbank_ayuka/pages/pembayaran_page.dart';
-import 'package:flutter_tugasbank_ayuka/pages/profile_page.dart';
-import 'package:flutter_tugasbank_ayuka/pages/scanqr_page.dart';
-import 'package:flutter_tugasbank_ayuka/pages/setting_page.dart';
-import 'package:flutter_tugasbank_ayuka/pages/cek_saldo_page.dart';
-import 'package:flutter_tugasbank_ayuka/pages/deposito_page.dart';
-import 'package:flutter_tugasbank_ayuka/pages/mutasi_page.dart';
-import 'package:flutter_tugasbank_ayuka/pages/pinjaman_page.dart';
-import 'package:flutter_tugasbank_ayuka/pages/transfer_page.dart';
-import 'package:flutter_tugasbank_ayuka/models/nasabah.dart';
-import 'package:flutter_tugasbank_ayuka/models/transaksi.dart';
+import 'package:flutter_tugasbank_isyana/pages/pembayaran_page.dart';
+import 'package:flutter_tugasbank_isyana/pages/profile_page.dart';
+import 'package:flutter_tugasbank_isyana/pages/scanqr_page.dart';
+import 'package:flutter_tugasbank_isyana/pages/setting_page.dart';
+import 'package:flutter_tugasbank_isyana/pages/cek_saldo_page.dart';
+import 'package:flutter_tugasbank_isyana/pages/deposito_page.dart';
+import 'package:flutter_tugasbank_isyana/pages/mutasi_page.dart';
+import 'package:flutter_tugasbank_isyana/pages/pinjaman_page.dart';
+import 'package:flutter_tugasbank_isyana/pages/transfer_page.dart';
+import 'package:flutter_tugasbank_isyana/models/nasabah.dart';
+import 'package:flutter_tugasbank_isyana/models/transaksi.dart';
 import '../data/nasabah_data.dart';
 import 'package:intl/intl.dart';
 
@@ -24,7 +24,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Nasabah _nasabah;
-  final NumberFormat currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+  final NumberFormat currencyFormat = NumberFormat.currency(
+    locale: 'id_ID',
+    symbol: 'Rp ',
+    decimalDigits: 0,
+  );
 
   @override
   void initState() {
@@ -39,7 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.blue[900],
         title: const Text(
           "Koperasi Undiksha",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.logout))],
       ),
@@ -68,10 +76,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text("Nasabah", style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text(_nasabah.nama, overflow: TextOverflow.ellipsis),
+                            const Text(
+                              "Nasabah",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              _nasabah.nama,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                             const SizedBox(height: 5),
-                            const Text("Total Saldo Anda", style: TextStyle(fontWeight: FontWeight.bold)),
+                            const Text(
+                              "Total Saldo Anda",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
                             Text(currencyFormat.format(_nasabah.saldo)),
                           ],
                         ),
@@ -88,24 +105,54 @@ class _HomeScreenState extends State<HomeScreen> {
                   childAspectRatio: 1,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   children: [
-                    _buildMenuItem(context, Icons.account_balance_wallet, "Cek Saldo", () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CekSaldoPage()));
-                    }),
+                    _buildMenuItem(
+                      context,
+                      Icons.account_balance_wallet,
+                      "Cek Saldo",
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CekSaldoPage(),
+                          ),
+                        );
+                      },
+                    ),
                     _buildMenuItem(context, Icons.send, "Transfer", () async {
-                      await Navigator.push(context, MaterialPageRoute(builder: (context) => TransferPage()));
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => TransferPage()),
+                      );
                       setState(() {}); // Refresh setelah transfer
                     }),
                     _buildMenuItem(context, Icons.savings, "Deposito", () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => DepositoPage()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => DepositoPage(nasabah: nasabahDummy),
+                        ),
+                      );
                     }),
                     _buildMenuItem(context, Icons.payment, "Pembayaran", () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PembayaranPage()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PembayaranPage(),
+                        ),
+                      );
                     }),
                     _buildMenuItem(context, Icons.attach_money, "Pinjaman", () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => PinjamanPage()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PinjamanPage()),
+                      );
                     }),
                     _buildMenuItem(context, Icons.history, "Mutasi", () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => MutasiPage()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MutasiPage()),
+                      );
                     }),
                   ],
                 ),
@@ -127,8 +174,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Butuh Bantuan?", style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text("0857-8497-8009", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            Text(
+                              "Butuh Bantuan?",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "0815-4769-3347",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -146,9 +202,24 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildBottomMenu(context, Icons.settings, "Setting", SettingPage()),
-                _buildBottomMenu(context, Icons.qr_code, "Scan QR", ScanQRPage()),
-                _buildBottomMenu(context, Icons.person, "Profile", ProfilePage()),
+                _buildBottomMenu(
+                  context,
+                  Icons.settings,
+                  "Setting",
+                  SettingPage(),
+                ),
+                _buildBottomMenu(
+                  context,
+                  Icons.qr_code,
+                  "Scan QR",
+                  ScanQRPage(),
+                ),
+                _buildBottomMenu(
+                  context,
+                  Icons.person,
+                  "Profile",
+                  ProfilePage(),
+                ),
               ],
             ),
           ),
@@ -157,7 +228,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMenuItem(BuildContext context, IconData icon, String label, Function onTap) {
+  Widget _buildMenuItem(
+    BuildContext context,
+    IconData icon,
+    String label,
+    Function onTap,
+  ) {
     return GestureDetector(
       onTap: () => onTap(),
       child: Column(
@@ -165,16 +241,28 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Icon(icon, size: 40, color: Colors.blue),
           const SizedBox(height: 5),
-          Text(label, textAlign: TextAlign.center, style: const TextStyle(fontSize: 13)),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 13),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildBottomMenu(BuildContext context, IconData icon, String label, Widget page) {
+  Widget _buildBottomMenu(
+    BuildContext context,
+    IconData icon,
+    String label,
+    Widget page,
+  ) {
     return GestureDetector(
       onTap: () async {
-        await Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+        await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => page),
+        );
         setState(() {}); // Refresh saldo jika ada perubahan dari halaman lain
       },
       child: Column(
@@ -187,4 +275,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

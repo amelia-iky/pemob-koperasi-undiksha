@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tugasbank_ayuka/login_screen.dart';
+import 'package:flutter_tugasbank_isyana/login_screen.dart';
+import 'package:flutter_tugasbank_isyana/pages/theme_provider.dart';
+import 'package:flutter_tugasbank_isyana/pages/setting_page.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Koperasi Undiksha",
-      home: LoginScreen(),
+      themeMode: themeProvider.currentTheme,
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      home: LoginScreen(), // Ganti ke SettingPage() untuk preview
     );
   }
 }
