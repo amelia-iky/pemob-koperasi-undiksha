@@ -13,7 +13,6 @@ void main() async {
           apiKey: 'AIzaSyDOSMHSfZJKn64U_SbeIJ_zt3hvw-Qi_yk',
           authDomain: 'fir-pemob-c2658.firebaseapp.com',
           projectId: 'fir-pemob-c2658',
-          storageBucket: 'YOUR_PROJECT_ID.appspot.com',
           messagingSenderId: '250831992965',
           appId: '1:250831992965:android:9348e06d2d7c8512dad1ec',
         ),
