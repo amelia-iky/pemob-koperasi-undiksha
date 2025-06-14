@@ -1,4 +1,4 @@
-name: flutter_tugasbank_isyana
+name: flutter_utspemob_ameng
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -31,6 +31,11 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.18.1
+  mobile_scanner: ^7.0.0
+  url_launcher: ^6.1.5
+  firebase_core: ^3.13.1
+  firebase_auth: ^5.5.4
+  google_sign_in: ^6.3.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -42,6 +47,7 @@ dev_dependencies:
     sdk: flutter
 
   provider: ^6.1.2
+  qr_code_scanner: ^1.0.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -63,8 +69,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/logo.png
-    - assets/profile.png
-    - assets/DSC05580.jpg
+    - assets/google_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

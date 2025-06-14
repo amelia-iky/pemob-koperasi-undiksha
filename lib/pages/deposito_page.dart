@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/nasabah.dart';
 import '../models/deposito.dart';
 
@@ -15,9 +16,12 @@ class _DepositoPageState extends State<DepositoPage> {
   final TextEditingController _nominalController = TextEditingController();
   String? _selectedTenor;
   final List<String> _tenorOptions = ['3 Bulan', '6 Bulan', '12 Bulan'];
+  final formatCurrency = NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0);
 
   void _tambahDeposito() {
-    int nominal = int.tryParse(_nominalController.text) ?? 0;
+    int nominal = int.tryParse(
+      _nominalController.text.replaceAll(RegExp(r'[^0-9]'), ''),
+    ) ?? 0;
 
     if (nominal <= 0 || _selectedTenor == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -34,10 +38,7 @@ class _DepositoPageState extends State<DepositoPage> {
     }
 
     setState(() {
-      // Kurangi saldo nasabah
       widget.nasabah.saldo -= nominal;
-
-      // Tambahkan ke daftar deposito
       widget.nasabah.daftarDeposito.add(
         Deposito(
           nominal: nominal,
@@ -45,8 +46,6 @@ class _DepositoPageState extends State<DepositoPage> {
           tanggalPengajuan: DateTime.now(),
         ),
       );
-
-      // Reset form
       _nominalController.clear();
       _selectedTenor = null;
     });
@@ -58,19 +57,27 @@ class _DepositoPageState extends State<DepositoPage> {
 
   @override
   Widget build(BuildContext context) {
-    int totalDeposito = widget.nasabah.daftarDeposito.fold(0, (sum, d) => sum + d.nominal);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Deposito'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Saldo Anda: Rp ${widget.nasabah.saldo}", style: TextStyle(fontSize: 18)),
-            SizedBox(height: 12),
+            Row(
+              children: [
+                Icon(Icons.account_balance_wallet),
+                SizedBox(width: 8),
+                Text(
+                  "Saldo Anda: ${formatCurrency.format(widget.nasabah.saldo)}",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+
             TextField(
               controller: _nominalController,
               keyboardType: TextInputType.number,
@@ -78,9 +85,11 @@ class _DepositoPageState extends State<DepositoPage> {
                 labelText: 'Nominal Deposito',
                 prefixText: 'Rp ',
                 border: OutlineInputBorder(),
+                suffixIcon: Icon(Icons.attach_money),
               ),
             ),
             SizedBox(height: 12),
+
             DropdownButtonFormField<String>(
               value: _selectedTenor,
               items: _tenorOptions
@@ -94,18 +103,21 @@ class _DepositoPageState extends State<DepositoPage> {
               decoration: InputDecoration(
                 labelText: 'Pilih Jangka Waktu',
                 border: OutlineInputBorder(),
+                suffixIcon: Icon(Icons.timer),
               ),
             ),
             SizedBox(height: 20),
+
             ElevatedButton.icon(
               onPressed: _tambahDeposito,
-              icon: Icon(Icons.save),
               label: Text("Ajukan Deposito"),
-              style: ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size.fromHeight(50),
+                backgroundColor: Colors.blue[800],
+                foregroundColor: Colors.white,
+              ),
+              icon: Icon(Icons.add),
             ),
-            SizedBox(height: 30),
-            Text("Jumlah Deposito: ${widget.nasabah.daftarDeposito.length}", style: TextStyle(fontSize: 16)),
-            Text("Total Deposito: Rp $totalDeposito", style: TextStyle(fontSize: 16)),
           ],
         ),
       ),

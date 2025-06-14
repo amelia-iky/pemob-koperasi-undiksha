@@ -1,10 +1,16 @@
 import '../models/nasabah.dart';
-import '../models/deposito.dart';
+// import '../models/deposito.dart';
+import '../models/pinjaman.dart'; // pastikan ini ada
 
 Nasabah nasabahDummy = Nasabah(
-  nama: "I Gusti Ayu Isyana Ariprabha",
-  saldo: 3600000,
+  nama: "Amelia Rizky Yuniar",
+  saldo: 5000000,
   histori: [],
   historiBayar: [],
   daftarDeposito: [],
+  daftarPinjaman: [],
 );
+
+void tambahPengajuanPinjaman(PengajuanPinjaman pinjaman) {
+  nasabahDummy.daftarPinjaman.add(pinjaman);
+}

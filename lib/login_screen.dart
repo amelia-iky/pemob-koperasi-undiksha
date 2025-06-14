@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tugasbank_isyana/data/nasabah_data.dart';
+import 'package:flutter_utspemob_ameng/data/nasabah_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 import 'home_screen.dart';
+import 'pages/register_mbanking_page.dart';
+import 'pages/forgot_password_page.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -14,12 +21,13 @@ class _LoginScreenState extends State<LoginScreen> {
   String usernameError = '';
   String passwordError = '';
 
+  // Login manual
   void _login() async {
     final username = _usernameController.text.trim();
     final password = _passwordController.text.trim();
 
-    const validUsername = "isyana";
-    const validPassword = "2315091061";
+    const validUsername = "Ameng";
+    const validPassword = "221204";
 
     setState(() {
       usernameError = '';
@@ -46,23 +54,58 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // @override
-  // void dispose() {
-  //   _usernameController.dispose();
-  //   _passwordController.dispose();
-  //   super.dispose();
-  // }
+  // Login dengan Google
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        print('Login Google dibatalkan');
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(nasabah: nasabahDummy),
+        ),
+      );
+    } catch (e) {
+      print('Login Google error: $e');
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Login Google gagal: $e')));
+    }
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             color: Colors.blue[900],
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Center(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: const Center(
               child: Text(
                 "Koperasi Undiksha",
                 style: TextStyle(
@@ -73,37 +116,31 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Image.asset('assets/logo.png', height: 100),
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
                 TextField(
                   controller: _usernameController,
                   decoration: InputDecoration(
                     labelText: "Username",
-                    border: OutlineInputBorder(),
-                    errorText:
-                        usernameError.isEmpty
-                            ? null
-                            : usernameError, // Menampilkan error jika ada
+                    border: const OutlineInputBorder(),
+                    errorText: usernameError.isEmpty ? null : usernameError,
                   ),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: "Password",
-                    border: OutlineInputBorder(),
-                    errorText:
-                        passwordError.isEmpty
-                            ? null
-                            : passwordError, // Menampilkan error jika ada
+                    border: const OutlineInputBorder(),
+                    errorText: passwordError.isEmpty ? null : passwordError,
                   ),
                   obscureText: true,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _login,
                   style: ElevatedButton.styleFrom(
@@ -112,26 +149,65 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text("Login", style: TextStyle(color: Colors.white)),
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
+                const SizedBox(height: 10),
+                ElevatedButton.icon(
+                  onPressed: signInWithGoogle,
+                  icon: Image.asset(
+                    'assets/google_logo.png', // Pastikan kamu punya ini
+                    height: 24,
+                    width: 24,
+                  ),
+                  label: const Text("Google"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    side: const BorderSide(color: Colors.grey),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     TextButton(
-                      onPressed: () {},
-                      child: Text("Daftar Mbanking"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterMbankingPage(),
+                          ),
+                        );
+                      },
+                      child: const Text("Daftar Mbanking"),
                     ),
-                    TextButton(onPressed: () {}, child: Text("Lupa password?")),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ResetPasswordPage(),
+                          ),
+                        );
+                      },
+                      child: const Text("Lupa password?"),
+                    ),
                   ],
                 ),
               ],
             ),
           ),
-          Spacer(),
+          const Spacer(),
           Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             color: Colors.grey[300],
-            child: Text("copyright @2025 by iisyanaa"),
+            child: const Text("Created by amelia"),
           ),
         ],
       ),

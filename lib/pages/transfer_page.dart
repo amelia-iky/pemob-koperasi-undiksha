@@ -125,12 +125,32 @@ class _TransferPageState extends State<TransferPage> {
               controller: _nominalController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
-                labelText: "Nominal Transfer",
+                labelText: "Jumlah Transfer",
+                hintText: "Contoh: 100000",
+                hintStyle: TextStyle(color: Colors.grey),
+                filled: true,
+                fillColor: Colors.white,
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.attach_money),
               ),
             ),
+            SizedBox(height: 20),
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Catatan (Opsional)",
+                hintText: "Misalnya: Bayar utang, hadiah, dll.",
+                hintStyle: TextStyle(color: Colors.grey),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.note),
+              ),
+            ),
             SizedBox(height: 30),
+            Text(
+              "Pastikan semua informasi sudah benar sebelum mengirim.",
+              style: TextStyle(color: Colors.red),
+            ),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -144,14 +164,7 @@ class _TransferPageState extends State<TransferPage> {
                   ),
                   textStyle: TextStyle(fontSize: 16),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.send),
-                    SizedBox(width: 8),
-                    Text("Kirim Sekarang"),
-                  ],
-                ),
+                child: Text("Kirim"), // Menghapus ikon, hanya teks "Kirim"
               ),
             ),
           ],

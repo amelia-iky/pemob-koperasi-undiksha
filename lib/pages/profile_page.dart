@@ -7,33 +7,33 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String username = '';
   TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _loadUsername();
+    _loadProfileData();
   }
 
-  // Ambil username dari SharedPreferences
-  void _loadUsername() async {
+  void _loadProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      username = prefs.getString('username') ?? 'Guest';
+      _usernameController.text = prefs.getString('username') ?? '';
+      _emailController.text = prefs.getString('email') ?? '';
+      _phoneController.text = prefs.getString('phone') ?? '';
     });
   }
 
-  // Simpan username ke SharedPreferences
-  void _saveUsername() async {
+  void _saveProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('username', _usernameController.text);
-    setState(() {
-      username = _usernameController.text;
-    });
+    await prefs.setString('email', _emailController.text);
+    await prefs.setString('phone', _phoneController.text);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Username berhasil disimpan!')),
+      SnackBar(content: Text('Profil berhasil disimpan!')),
     );
   }
 
@@ -48,67 +48,86 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: Center(
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Foto(),
-              Nama(),
-              SizedBox(height: 20),
-              Text(
-                "Welcome, $username!",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                child: TextField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    labelText: 'Masukkan Username Baru',
-                    border: OutlineInputBorder(),
+          child: Card(
+            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 6,
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundImage: AssetImage('assets/logo.png'),
                   ),
-                ),
+                  SizedBox(height: 10),
+                  Text(
+                    _usernameController.text.isEmpty
+                        ? 'Nama Belum Diatur'
+                        : _usernameController.text,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blueAccent,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  _buildInputField(
+                    controller: _usernameController,
+                    label: "Nama Lengkap",
+                    icon: Icons.person,
+                  ),
+                  SizedBox(height: 12),
+                  _buildInputField(
+                    controller: _emailController,
+                    label: "Email",
+                    icon: Icons.email,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  SizedBox(height: 12),
+                  _buildInputField(
+                    controller: _phoneController,
+                    label: "Nomor Telepon",
+                    icon: Icons.phone,
+                    keyboardType: TextInputType.phone,
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton.icon(
+                    onPressed: _saveProfileData,
+                    icon: Icon(Icons.save),
+                    label: Text('Simpan Profil'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue[800],
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      minimumSize: Size.fromHeight(48),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: _saveUsername,
-                child: Text('Simpan Username'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[800],
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
-}
 
-class Foto extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 75,
-      backgroundImage: AssetImage('assets/DSC05580.jpg'),
-    );
-  }
-}
-
-class Nama extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 20),
-      child: Text(
-        'I Gusti Ayu Isyana Ariprabha',
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-          color: Colors.blueAccent,
-        ),
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }

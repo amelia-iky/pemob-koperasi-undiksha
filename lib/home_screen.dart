@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tugasbank_isyana/pages/pembayaran_page.dart';
-import 'package:flutter_tugasbank_isyana/pages/profile_page.dart';
-import 'package:flutter_tugasbank_isyana/pages/scanqr_page.dart';
-import 'package:flutter_tugasbank_isyana/pages/setting_page.dart';
-import 'package:flutter_tugasbank_isyana/pages/cek_saldo_page.dart';
-import 'package:flutter_tugasbank_isyana/pages/deposito_page.dart';
-import 'package:flutter_tugasbank_isyana/pages/mutasi_page.dart';
-import 'package:flutter_tugasbank_isyana/pages/pinjaman_page.dart';
-import 'package:flutter_tugasbank_isyana/pages/transfer_page.dart';
-import 'package:flutter_tugasbank_isyana/models/nasabah.dart';
-import 'package:flutter_tugasbank_isyana/models/transaksi.dart';
-import '../data/nasabah_data.dart';
 import 'package:intl/intl.dart';
+
+import 'package:flutter_utspemob_ameng/pages/pembayaran_page.dart';
+import 'package:flutter_utspemob_ameng/pages/profile_page.dart';
+import 'package:flutter_utspemob_ameng/pages/scanqr_page.dart';
+import 'package:flutter_utspemob_ameng/pages/setting_page.dart';
+import 'package:flutter_utspemob_ameng/pages/cek_saldo_page.dart';
+import 'package:flutter_utspemob_ameng/pages/deposito_page.dart';
+import 'package:flutter_utspemob_ameng/pages/mutasi_page.dart';
+import 'package:flutter_utspemob_ameng/pages/pinjaman_page.dart';
+import 'package:flutter_utspemob_ameng/pages/transfer_page.dart';
+import 'package:flutter_utspemob_ameng/models/nasabah.dart';
 
 class HomeScreen extends StatefulWidget {
   final Nasabah nasabah;
-
-  const HomeScreen({Key? key, required this.nasabah}) : super(key: key);
+  const HomeScreen({super.key, required this.nasabah});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -38,151 +36,84 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int totalDeposito = _nasabah.daftarDeposito.fold(
+      0,
+      (sum, d) => sum + d.nominal,
+    );
+
     return Scaffold(
+      backgroundColor: const Color(0xFFF6F9FF),
       appBar: AppBar(
-        backgroundColor: Colors.blue[900],
+        backgroundColor: Colors.blue[800],
+        elevation: 0,
         title: const Text(
           "Koperasi Undiksha",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
         ),
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.logout))],
+        actions: [IconButton(icon: const Icon(Icons.logout), onPressed: () {})],
       ),
       body: Column(
         children: [
           Expanded(
             child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               children: [
-                // Informasi Nasabah
+                // Compact Card Profile + Saldo
                 Container(
-                  margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.blue[50],
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.blue),
+                    gradient: LinearGradient(
+                      colors: [Colors.blue[800]!, Colors.blue[400]!],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const CircleAvatar(
-                        radius: 30,
-                        backgroundImage: AssetImage("assets/profile.png"),
+                      CircleAvatar(
+                        radius: 22,
+                        backgroundImage: AssetImage("assets/logo.png"),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Nasabah",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                            Text(
+                              "Halo,",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
                             ),
                             Text(
                               _nasabah.nama,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 5),
-                            const Text(
-                              "Total Saldo Anda",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(currencyFormat.format(_nasabah.saldo)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Menu Utama
-                GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 3,
-                  childAspectRatio: 1,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  children: [
-                    _buildMenuItem(
-                      context,
-                      Icons.account_balance_wallet,
-                      "Cek Saldo",
-                      () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CekSaldoPage(),
-                          ),
-                        );
-                      },
-                    ),
-                    _buildMenuItem(context, Icons.send, "Transfer", () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => TransferPage()),
-                      );
-                      setState(() {}); // Refresh setelah transfer
-                    }),
-                    _buildMenuItem(context, Icons.savings, "Deposito", () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => DepositoPage(nasabah: nasabahDummy),
-                        ),
-                      );
-                    }),
-                    _buildMenuItem(context, Icons.payment, "Pembayaran", () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PembayaranPage(),
-                        ),
-                      );
-                    }),
-                    _buildMenuItem(context, Icons.attach_money, "Pinjaman", () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PinjamanPage()),
-                      );
-                    }),
-                    _buildMenuItem(context, Icons.history, "Mutasi", () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MutasiPage()),
-                      );
-                    }),
-                  ],
-                ),
-
-                // Bantuan
-                Container(
-                  margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[50],
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.blue),
-                  ),
-                  child: Row(
-                    children: const [
-                      Icon(Icons.phone, color: Colors.blue, size: 40),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Butuh Bantuan?",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              "0815-4769-3347",
-                              style: TextStyle(
-                                fontSize: 18,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
                                 fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              "Saldo: ${currencyFormat.format(_nasabah.saldo)}",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              "Deposito: ${currencyFormat.format(totalDeposito)}",
+                              style: TextStyle(
+                                color: Colors.green[100],
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],
@@ -191,35 +122,122 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
+
+                const SizedBox(height: 20),
+
+                // Menu Grid
+                GridView.count(
+                  crossAxisCount: 3,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 0.9,
+                  children: [
+                    _buildMenuCard(
+                      Icons.account_balance_wallet,
+                      "Cek Saldo",
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => CekSaldoPage()),
+                        );
+                      },
+                    ),
+                    _buildMenuCard(Icons.send, "Transfer", () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => TransferPage()),
+                      );
+                      setState(() {});
+                    }),
+                    _buildMenuCard(Icons.savings, "Deposito", () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => DepositoPage(nasabah: _nasabah),
+                        ),
+                      );
+                      setState(() {});
+                    }),
+                    _buildMenuCard(Icons.payment, "Pembayaran", () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => PembayaranPage()),
+                      );
+                      setState(() {});
+                    }),
+                    _buildMenuCard(Icons.attach_money, "Pinjaman", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => PinjamanPage()),
+                      );
+                    }),
+                    _buildMenuCard(Icons.history, "Mutasi", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => MutasiPage()),
+                      );
+                    }),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                // Bantuan
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  color: Colors.blue[50],
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: const [
+                        Icon(Icons.phone, size: 32, color: Colors.blue),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Butuh Bantuan?",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Text(
+                                "0811-0262-41853",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
 
-          // Menu Bawah
+          // Bottom Menu
           Container(
-            color: Colors.white,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              border: Border(top: BorderSide(color: Colors.grey, width: 0.2)),
+            ),
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildBottomMenu(
-                  context,
-                  Icons.settings,
-                  "Setting",
-                  SettingPage(),
-                ),
-                _buildBottomMenu(
-                  context,
-                  Icons.qr_code,
-                  "Scan QR",
-                  ScanQRPage(),
-                ),
-                _buildBottomMenu(
-                  context,
-                  Icons.person,
-                  "Profile",
-                  ProfilePage(),
-                ),
+                _buildBottomMenu(Icons.settings, "Setting", SettingPage()),
+                _buildBottomMenu(Icons.qr_code, "Scan QR", ScanQRPage()),
+                _buildBottomMenu(Icons.person, "Profile", ProfilePage()),
               ],
             ),
           ),
@@ -228,47 +246,41 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMenuItem(
-    BuildContext context,
-    IconData icon,
-    String label,
-    Function onTap,
-  ) {
+  Widget _buildMenuCard(IconData icon, String label, VoidCallback onTap) {
     return GestureDetector(
-      onTap: () => onTap(),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 40, color: Colors.blue),
-          const SizedBox(height: 5),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 13),
+      onTap: onTap,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 32, color: Colors.blue[700]),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 13),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildBottomMenu(
-    BuildContext context,
-    IconData icon,
-    String label,
-    Widget page,
-  ) {
+  Widget _buildBottomMenu(IconData icon, String label, Widget page) {
     return GestureDetector(
       onTap: () async {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => page),
-        );
-        setState(() {}); // Refresh saldo jika ada perubahan dari halaman lain
+        await Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+        setState(() {});
       },
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 30, color: Colors.blue),
+          Icon(icon, size: 26, color: Colors.blue),
+          const SizedBox(height: 4),
           Text(label, style: const TextStyle(fontSize: 12)),
         ],
       ),

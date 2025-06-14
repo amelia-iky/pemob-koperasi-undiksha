@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import '../data/nasabah_data.dart';
 
 class CekSaldoPage extends StatefulWidget {
+  const CekSaldoPage({super.key});
+
   @override
   _CekSaldoPageState createState() => _CekSaldoPageState();
 }
@@ -47,22 +49,20 @@ class _CekSaldoPageState extends State<CekSaldoPage> {
                       color: Colors.blueAccent,
                     ),
                     const SizedBox(height: 16),
-                    const Text('Saldo Anda', style: TextStyle(fontSize: 24)),
+                    const Text(
+                      'Sisa Saldo Anda',
+                      style: TextStyle(fontSize: 24),
+                    ),
                     const SizedBox(height: 8),
                     Text(
                       format.format(saldo),
                       style: const TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                        color: Color.fromARGB(255, 45, 79, 130),
                       ),
                     ),
                     const SizedBox(height: 24),
-                    ElevatedButton.icon(
-                      onPressed: _loadSaldo,
-                      icon: const Icon(Icons.refresh),
-                      label: const Text("Refresh Saldo"),
-                    ),
                     const SizedBox(height: 12),
                     TextButton.icon(
                       onPressed: () {
